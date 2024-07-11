@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-/*
- * Copyright (c) 2023 https://github.com/cm9vdA/build-linux
- */
-
 /dts-v1/;
 
 #include <dt-bindings/input/linux-event-codes.h>
@@ -13,10 +9,11 @@
 
 
 / {
-	model = "Fine3399";
-	compatible = "rockchip,rk3399";
+	model = "Rockchip Fine3399";
+	compatible = "rockchip,fine3399", "rockchip,rk3399";
 
 	aliases {
+		ethernet0 = &gmac;
 		mmc0 = &sdio0;
 		mmc1 = &sdmmc;
 		mmc2 = &sdhci;
@@ -122,7 +119,7 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&power_key>;
 
-		power {
+		key-power {
 			debounce-interval = <100>;
 			gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_LOW>; // bsp
 			label = "GPIO Key Power";
@@ -131,12 +128,19 @@
 		};
 	};
 
-	fan0: pwm-fan {
+	fan: pwm-fan {
 		compatible = "pwm-fan";
-		cooling-levels = <0 150 200 255>;
+		cooling-levels = <0 25 50 80 120 160>;
 		#cooling-cells = <2>;
 		fan-supply = <&vcc_sys>;
 		pwms = <&pwm1 0 40000 0>;
+	};
+
+	backlight: backlight {
+		compatible = "pwm-backlight";
+		brightness-levels = <0 36 72 108 144 180 216 255>;
+		default-brightness-level = <3>;
+		pwms = <&pwm0 0 1000000 0>;
 	};
 
 	// pwm3
@@ -194,18 +198,28 @@
 
 &cpu_thermal {
 	trips {
+		cpu_warm: cpu_warm {
+			temperature = <50000>;
+			hysteresis = <2000>;
+			type = "active";
+		};
+
 		cpu_hot: cpu_hot {
-			hysteresis = <10000>;
-			temperature = <55000>;
+			temperature = <65000>;
+			hysteresis = <2000>;
 			type = "active";
 		};
 	};
 
 	cooling-maps {
 		map2 {
-			cooling-device =
-				<&fan0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+			trip = <&cpu_warm>;
+			cooling-device = <&fan THERMAL_NO_LIMIT 1>;
+		};
+
+		map3 {
 			trip = <&cpu_hot>;
+			cooling-device = <&fan 4 THERMAL_NO_LIMIT>;
 		};
 	};
 };
@@ -228,6 +242,34 @@
 	tx_delay = <0x28>;
 	rx_delay = <0x11>;
 	status = "okay";
+};
+
+&gpu_thermal {
+	trips {
+		gpu_warm: gpu_warm {
+			temperature = <50000>;
+			hysteresis = <2000>;
+			type = "active";
+		};
+
+		gpu_hot: gpu_hot {
+			temperature = <65000>;
+			hysteresis = <2000>;
+			type = "active";
+		};
+	};
+
+	cooling-maps {
+		map1 {
+			trip = <&gpu_warm>;
+			cooling-device = <&fan THERMAL_NO_LIMIT 1>;
+		};
+
+		map2 {
+			trip = <&gpu_hot>;
+			cooling-device = <&fan 4 THERMAL_NO_LIMIT>;
+		};
+	};
 };
 
 &hdmi {
@@ -580,12 +622,12 @@
 		};
 	};
 };
-/*
+
 // TFT
 &pwm0 {
 	status = "okay";
 };
-*/
+
 // FAN
 &pwm1 {
 	status = "okay";
@@ -662,25 +704,30 @@
 	};
 };
 */
-/*
+
 &spi2 {
 	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&spi2_clk &spi2_tx &spi2_cs0>;
 
 	panel@0 {
-		compatible = "sitronix,st7789v";
+		compatible = "sitronix,st7735r", "sitronix,st7789v", "jianda,jd-t18003-t01";
 		reg = <0>;
-		// backlight = <&pwm0>;
+		rgb;
+		width = <80>;
+		height = <160>;
+		fps = <30>;
+		buswidth = <8>;
+		rotate = <270>;
+		backlight = <&backlight>;
 		dc-gpios = <&gpio4 RK_PD5 GPIO_ACTIVE_HIGH>;
 		reset-gpios = <&gpio4 RK_PD1 GPIO_ACTIVE_LOW>;
-		led-gpios = <&gpio4 RK_PC2 GPIO_ACTIVE_HIGH>;  
-		spi-max-frequency = <15000000>;
-		spi-cs-high;
-		status = "okay";
+		led-gpios = <&gpio4 RK_PC2 GPIO_ACTIVE_HIGH>;
+		spi-max-frequency = <32000000>;
+		debug = <0>;
+		spi-cpol;
+		spi-cpha;
 	};
 };
-*/
+
 &tcphy0 {
 	status = "okay";
 };
