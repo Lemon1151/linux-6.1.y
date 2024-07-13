@@ -130,7 +130,7 @@
 
 	fan: pwm-fan {
 		compatible = "pwm-fan";
-		cooling-levels = <0 25 50 80 120 160>;
+		cooling-levels = <0 40 100 170 255>;
 		#cooling-cells = <2>;
 		fan-supply = <&vcc_sys>;
 		pwms = <&pwm1 0 40000 0>;
@@ -219,7 +219,7 @@
 
 		map3 {
 			trip = <&cpu_hot>;
-			cooling-device = <&fan 4 THERMAL_NO_LIMIT>;
+			cooling-device = <&fan 2 THERMAL_NO_LIMIT>;
 		};
 	};
 };
@@ -267,7 +267,7 @@
 
 		map2 {
 			trip = <&gpu_hot>;
-			cooling-device = <&fan 4 THERMAL_NO_LIMIT>;
+			cooling-device = <&fan 2 THERMAL_NO_LIMIT>;
 		};
 	};
 };
@@ -709,7 +709,7 @@
 	status = "okay";
 
 	panel@0 {
-		compatible = "sitronix,st7735r", "sitronix,st7789v", "jianda,jd-t18003-t01";
+		compatible = "sitronix,st7789v", "sitronix,st7735r", "jianda,jd-t18003-t01";
 		reg = <0>;
 		rgb;
 		width = <80>;
