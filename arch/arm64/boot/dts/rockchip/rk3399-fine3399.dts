@@ -130,7 +130,7 @@
 
 	fan: pwm-fan {
 		compatible = "pwm-fan";
-		cooling-levels = <0 40 100 170 255>;
+		cooling-levels = <0 40 100 160 255>;
 		#cooling-cells = <2>;
 		fan-supply = <&vcc_sys>;
 		pwms = <&pwm1 0 40000 0>;
@@ -709,7 +709,7 @@
 	status = "okay";
 
 	panel@0 {
-		compatible = "sitronix,st7789v", "sitronix,st7735r", "jianda,jd-t18003-t01";
+		compatible = "sitronix,st7789v";
 		reg = <0>;
 		rgb;
 		width = <80>;
