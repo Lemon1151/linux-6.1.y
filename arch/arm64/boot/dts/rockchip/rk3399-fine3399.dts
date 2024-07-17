@@ -130,7 +130,7 @@
 
 	fan: pwm-fan {
 		compatible = "pwm-fan";
-		cooling-levels = <0 40 100 160 255>;
+		cooling-levels = <0 50 100 150 255>;
 		#cooling-cells = <2>;
 		fan-supply = <&vcc_sys>;
 		pwms = <&pwm1 0 40000 0>;
@@ -205,7 +205,7 @@
 		};
 
 		cpu_hot: cpu_hot {
-			temperature = <65000>;
+			temperature = <60000>;
 			hysteresis = <2000>;
 			type = "active";
 		};
@@ -253,7 +253,7 @@
 		};
 
 		gpu_hot: gpu_hot {
-			temperature = <65000>;
+			temperature = <60000>;
 			hysteresis = <2000>;
 			type = "active";
 		};
