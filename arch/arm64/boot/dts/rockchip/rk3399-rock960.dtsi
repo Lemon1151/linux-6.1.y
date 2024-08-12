@@ -83,6 +83,19 @@
 		regulator-always-on;
 		vin-supply = <&vcc5v0_sys>;
 	};
+	
+	vcc5v0_otg: vcc5v0-otg-regulator {
+		compatible = "regulator-fixed";
+		enable-active-high;
+		pinctrl-names = "default";
+		pinctrl-0 = <&otg_vbus_drv>;
+		gpio = <&gpio1 RK_PA3 GPIO_ACTIVE_HIGH>;
+		regulator-name = "vcc5v0_otg";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		regulator-always-on;
+		vin-supply = <&vcc5v0_sys>;
+	};
 
 	vcc_0v9: vcc-0v9 {
 		compatible = "regulator-fixed";
@@ -128,6 +141,8 @@
 };
 
 &hdmi {
+	avdd-0v9-supply = <&vcca0v9_hdmi>;
+	avdd-1v8-supply = <&vcca1v8_hdmi>;
 	ddc-i2c-bus = <&i2c3>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&hdmi_cec>;
@@ -500,6 +515,14 @@
 			rockchip,pins = <0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
+	
+	usb {
+		otg_vbus_drv: otg-vbus-drv {
+			rockchip,pins =
+				<1 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>;
+
+		};
+	};
 };
 
 &pwm2 {
@@ -615,10 +638,12 @@
 };
 
 &u2phy0_otg {
+	vbus-supply = <&vcc5v0_otg>;
 	status = "okay";
 };
 
 &u2phy1_otg {
+	vbus-supply = <&vcc5v0_otg>;
 	status = "okay";
 };
 
